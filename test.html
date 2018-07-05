@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery Add / Remove Table Rows Dynamically</title>
+<style type="text/css">
+    form{
+        margin: 20px 0;
+    }
+    form input, button{
+        padding: 5px;
+    }
+    table{
+        width: 100%;
+        margin-bottom: 20px;
+		border-collapse: collapse;
+    }
+    table, th, td{
+        border: 1px solid #cdcdcd;
+    }
+    table th, table td{
+        padding: 10px;
+        text-align: left;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+      window.calc = function (thisRow){
+        var sum = 0;
+        var one = thisRow.getElementsByTagName('input')[1].value;
+        var two = thisRow.getElementsByTagName('input')[2].value;
+        thisRow.getElementsByTagName('input')[3].value = one * two;
+        var prodprice = thisRow.getElementsByTagName('input')[3].value;
+        //alert(prodprice);
+         sum = sum + prodprice;
+         //$("#total").text(sum);
+         calculateSum();
+      }
+
+      var count = 1;
+        $(".add-row").click(function(){
+            count += 1;
+            var name = $("#name").val();
+            var email = $("#email").val();
+            alert(count);
+            var markup = "<tr><td>"+count+"</td><td><input type='checkbox' name='record'></td><td>" + name + "</td><td>" + email + "</td><td><input class='a2' name='A[]' onchange='calc(this.parentElement.parentElement);' type='text' value=1 /></td><td><input class='b2' name='B[]' onchange='calc(this.parentElement.parentElement);' type='text' value=3 /></td><td><input class='c2' name='C[]' type='text' readonly /></td><TD><SELECT name='country'><OPTION value='in'>India</OPTION><OPTION value='de'>Germany</OPTION><OPTION value='fr'>France</OPTION><OPTION value='us'>United States</OPTION><OPTION value='ch'>Switzerland</OPTION></SELECT></TD><td><button type='button' name='deleteRow' class='delete-row' id='deleteBowl'>Delete Row</button></td></tr>";
+            $("table tbody").append(markup);
+        });
+
+        // Find and remove selected table rows
+        /*$(".delete-row").click(function(){
+            $("table tbody").find('input[name="record"]').each(function(){
+            	if($(this).is(":checked")){
+                    $(this).parents("tr").remove();
+                }
+            });
+        });*/
+
+        $(document).on('click', 'button.delete-row', function () { // <-- changes
+            alert("aa");
+            $(this).closest('tr').remove();
+            return false;
+        });
+        $("#firstDate").datepicker({
+				});
+			$("#secondDate").datepicker({
+           onSelect: function () {
+              myfunc();
+      			}
+				});
+
+       function myfunc(){
+        var start= $("#firstDate").datepicker("getDate");
+      	var end= $("#secondDate").datepicker("getDate");
+     		days = (end- start) / (1000 * 60 * 60 * 24);
+         alert(Math.round(days));
+          $('#demo').html(Math.round(days));
+       }
+
+       function loadgrandtotal() {
+          var sum = 0;
+          $('.c').each(function () {
+              var prodprice = Number($(this).text());
+              alert(prodprice);
+              sum = sum + prodprice;
+          });
+          //$("#total").text(sum.toFixed(2));
+      }
+      loadgrandtotal();
+      function onc() {
+
+        var a= document.getElementById('a[]');
+        var b= document.getElementById('b[]');
+        var c = Math.ceil(a.value*b.value);
+        alert(b);
+        document.getElementById('price[]').value =c;
+        }
+
+        function calculateSum() {
+          alert('asas');
+          var sum = 0;
+          //iterate through each textboxes and add the values
+          $(".c2").each(function () {
+
+              //add only if the value is number
+              if (!isNaN(this.value) && this.value.length != 0) {
+                  sum += parseFloat(this.value);
+              }
+
+          });
+          //.toFixed() method will roundoff the final sum to 2 decimal places
+          $("#total").html(sum.toFixed(2));
+      }
+      $("table").on("keyup", ".c2", function () {
+          calculateSum();
+      });
+
+    });
+</script>
+</head>
+<body onload="hitung2();">
+    <form>
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="email" placeholder="Email Address"><br>
+        Duration: <div id="demo">0</div>
+    	<input type="button" class="add-row" value="Add Row">
+    </form>
+    <input type="text" id="firstDate" name="firstDate"/>
+    <input type="text" id="secondDate" name="secondDate"/>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Select</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>qty</th>
+                <th>rates</th>
+                <th>total</th>
+                <th>country</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><input type="checkbox" name="record"></td>
+                <td>Peter Parker</td>
+                <td>peterparker@mail.com</td>
+                <td><input class="a2" name="A[]" onkeyup="hitung2();" type="text" value=1 /></td>
+                <td><input class="b2" name="B[]" onkeyup="hitung2();" type="text" value=3 /></td>
+                <td><input class="c2" name="C[]" type="text" readonly /></td>
+                <TD>
+          				<SELECT name="country">
+          					<OPTION value="in">India</OPTION>
+          					<OPTION value="de">Germany</OPTION>
+          					<OPTION value="fr">France</OPTION>
+          					<OPTION value="us">United States</OPTION>
+          					<OPTION value="ch">Switzerland</OPTION>
+          				</SELECT>
+          			</TD>
+                <td><button type="button" class="delete-row" id="deleteBowl">Delete Row</button></td>
+            </tr>
+            <tr>
+              <td>Total:</td>
+              <td id="total"></td>
+              <td>
+            </tr>
+        </tbody>
+    </table>
+    <!--<button type="button" class="delete-row">Delete Row</button>-->
+</body>
+</html>
+<script>
+function hitung2() {
+    var a = $(".a2").val();
+    var b = $(".b2").val();
+    c = a * b; //a kali b
+    $(".c2").val(c);
+}
+</script>
+
+
+<!--<p>
+<b>Suckittrees.com Keyup</b>
+<br/>
+A :
+<input class="a2" name="A" onkeyup="hitung2();" type="text" value=1 />
+<br>B :
+<input class="b2" name="B" onkeyup="hitung2();" type="text" value=3 />
+<br>C :
+<input class="c2" name="C" type="text" readonly />
+</p>-->
